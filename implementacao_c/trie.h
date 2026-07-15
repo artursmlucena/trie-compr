@@ -2,7 +2,6 @@
 #define TRIE_H
 #include <stdbool.h>
 
-struct trie;
 typedef struct trie trie;
 trie* trie_new();
 
