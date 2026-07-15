@@ -10,7 +10,7 @@
 typedef struct node {
   struct node* letters[ALPHABET_SIZE];
   bool end;
-  int prefixNum;
+  int prefix_num;
 
 } node;
 
@@ -25,7 +25,7 @@ node* node_new() {
   check_null(newNode);
   for (int i = 0; i < ALPHABET_SIZE; i++) newNode->letters[i] = NULL;
   newNode->end = false;
-  newNode->prefixNum = 0;
+  newNode->prefix_num = 0;
   return newNode;
 }
 
@@ -76,17 +76,17 @@ void node_erase_end(node* n) {
 
 int node_get_prefix_num(const node* n) {
   assert(n != NULL);
-  return n->prefixNum;
+  return n->prefix_num;
 }
 
 void node_add_prefix_num(node* n) {
   assert(n != NULL);
-  n->prefixNum++;
+  n->prefix_num++;
 }
 
 void node_sub_prefix_num(node* n) {
   assert(n != NULL);
-  n->prefixNum--;
+  n->prefix_num--;
 }
 
 static int get_letter_index(char c) {
