@@ -41,6 +41,7 @@ node* node_get_letter(const node* n, int i) {
   index_check(i);
   return n->letters[i];
 }
+
 void node_add_letter(node* n, int i, node* next) {
   assert(n != NULL);
   index_check(i);

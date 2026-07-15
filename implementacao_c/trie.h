@@ -5,6 +5,7 @@
 struct trie;
 typedef struct trie trie;
 trie* trie_new();
+
 void trie_add(trie* t, const char* word);
 bool trie_check(const trie* t, const char* word);
 bool trie_remove(trie* t, const char* word);
