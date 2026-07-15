@@ -9,7 +9,7 @@
 
 typedef struct node {
   struct node* letters[ALPHABET_SIZE];
-  bool end;
+  int end;
   int prefix_num;
 
 } node;
@@ -24,7 +24,7 @@ node* node_new() {
   node* newNode = malloc(sizeof(node));
   check_null(newNode);
   for (int i = 0; i < ALPHABET_SIZE; i++) newNode->letters[i] = NULL;
-  newNode->end = false;
+  newNode->end = 0;
   newNode->prefix_num = 0;
   return newNode;
 }
@@ -64,14 +64,14 @@ bool node_get_end(const node* n) {
   return n->end;
 }
 
-void node_set_end(node* n) {
+void node_add_end(node* n) {
   assert(n != NULL);
-  n->end = true;
+  n->end++;
 }
 
-void node_erase_end(node* n) {
+void node_sub_end(node* n) {
   assert(n != NULL);
-  n->end = false;
+  n->end--;
 }
 
 int node_get_prefix_num(const node* n) {
@@ -97,7 +97,6 @@ static int get_letter_index(char c) {
 
 typedef struct trie {
   node* root;
-  int words;
 } trie;
 
 trie* trie_new() {
@@ -105,7 +104,6 @@ trie* trie_new() {
   check_null(t);
   t->root = node_new();
   check_null(t->root);
-  t->words = 0;
   return t;
 }
 
@@ -123,27 +121,26 @@ bool trie_check(const trie* t, const char* word) {
   return recursive_check(t->root, word);
 }
 
-void trie_add(trie* t, const char* word) {
-  node* cur = t->root;
-
-  if (trie_check(t, word)) return;
-
-  for (const char* p = word; *p; p++) {
-    int c = get_letter_index(*p);
-    node* next = node_get_letter(cur, c);
-
-    if (next == NULL) {
-      next = node_new();
-      node_add_letter(cur, c, next);
-    }
-
-    cur = next;
+static void recursive_add(node* cur, const char* word) {
+  if (!*(word)) {
+    node_add_end(cur);
     node_add_prefix_num(cur);
+    return;
+  }
+  int c = get_letter_index(*word);
+  node* next = node_get_letter(cur, c);
+
+  if (next == NULL) {
+    next = node_new();
+    node_add_letter(cur, c, next);
   }
 
-  if (!node_get_end(cur)) t->words++;
-  node_set_end(cur);
+  recursive_add(next, word + 1);
+
+  node_add_prefix_num(cur);
 }
+
+void trie_add(trie* t, const char* word) { recursive_add(t->root, word); }
 
 bool trie_remove(trie* t, const char* word) {
   node* cur = t->root;
@@ -164,8 +161,7 @@ bool trie_remove(trie* t, const char* word) {
     cur = next;
   }
 
-  t->words--;
-  node_erase_end(cur);
+  node_sub_end(cur);
   if (nodeToRemove != NULL)
     node_remove_letter_sub_tree(nodeToRemove, idToRemove);
 
@@ -183,7 +179,7 @@ int trie_cnt(const trie* t, const char* word) {
   return node_get_prefix_num(cur);
 }
 
-int trie_get_words(const trie* t) { return t->words; }
+int trie_get_words(const trie* t) { return node_get_prefix_num(t->root); }
 
 void trie_free(trie* t) {
   if (t == NULL) return;
