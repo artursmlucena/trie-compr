@@ -1,6 +1,6 @@
 #ifndef PTR_H
 #define PTR_H
 
-void checkNull(void* ptr);
+void check_null(void* ptr);
 
 #endif  // !PTR_H
