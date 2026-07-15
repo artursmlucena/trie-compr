@@ -22,28 +22,28 @@ void node_free(node* n) {
 
 node* node_new() {
   node* newNode = malloc(sizeof(node));
-  checkNull(newNode);
+  check_null(newNode);
   for (int i = 0; i < ALPHABET_SIZE; i++) newNode->letters[i] = NULL;
   newNode->end = false;
   newNode->prefixNum = 0;
   return newNode;
 }
 
-static void indexCheck(int i) {
+static void index_check(int i) {
   if (i < 0 || i >= ALPHABET_SIZE) {
     fprintf(stderr, "Index out of bounds for node\n");
     exit(EXIT_FAILURE);
   }
 }
 
-node* node_getLetter(const node* n, int i) {
+node* node_get_letter(const node* n, int i) {
   assert(n != NULL);
-  indexCheck(i);
+  index_check(i);
   return n->letters[i];
 }
-void node_addLetter(node* n, int i, node* next) {
+void node_add_letter(node* n, int i, node* next) {
   assert(n != NULL);
-  indexCheck(i);
+  index_check(i);
   if (n->letters[i] != NULL) {
     fprintf(stderr, "Children node should not be overwritten\n");
     exit(EXIT_FAILURE);
@@ -51,46 +51,46 @@ void node_addLetter(node* n, int i, node* next) {
   n->letters[i] = next;
 }
 
-void node_removeLetterSubTree(node* n, int i) {
-  checkNull(n);
-  indexCheck(i);
+void node_remove_letter_sub_tree(node* n, int i) {
+  check_null(n);
+  index_check(i);
   node_free(n->letters[i]);
   n->letters[i] = NULL;
 }
 
-bool node_getEnd(const node* n) {
+bool node_get_end(const node* n) {
   assert(n != NULL);
   return n->end;
 }
 
-void node_setEnd(node* n) {
+void node_set_end(node* n) {
   assert(n != NULL);
   n->end = true;
 }
 
-void node_eraseEnd(node* n) {
+void node_erase_end(node* n) {
   assert(n != NULL);
   n->end = false;
 }
 
-int node_getPrefixNum(const node* n) {
+int node_get_prefix_num(const node* n) {
   assert(n != NULL);
   return n->prefixNum;
 }
 
-void node_addPrefixNum(node* n) {
+void node_add_prefix_num(node* n) {
   assert(n != NULL);
   n->prefixNum++;
 }
 
-void node_subPrefixNum(node* n) {
+void node_sub_prefix_num(node* n) {
   assert(n != NULL);
   n->prefixNum--;
 }
 
-static int getLetterIndex(char c) {
+static int get_letter_index(char c) {
   int i = c - 'a';
-  indexCheck(i);
+  index_check(i);
   return i;
 }
 
@@ -101,9 +101,9 @@ typedef struct trie {
 
 trie* trie_new() {
   trie* t = malloc(sizeof(trie));
-  checkNull(t);
+  check_null(t);
   t->root = node_new();
-  checkNull(t->root);
+  check_null(t->root);
   t->words = 0;
   return t;
 }
@@ -112,12 +112,12 @@ bool trie_check(const trie* t, const char* word) {
   node* cur = t->root;
 
   for (const char* p = word; *p; p++) {
-    int c = getLetterIndex(*p);
-    node* next = node_getLetter(cur, c);
+    int c = get_letter_index(*p);
+    node* next = node_get_letter(cur, c);
     if (next == NULL) return false;
     cur = next;
   }
-  return node_getEnd(cur);
+  return node_get_end(cur);
 }
 
 void trie_add(trie* t, const char* word) {
@@ -126,20 +126,20 @@ void trie_add(trie* t, const char* word) {
   if (trie_check(t, word)) return;
 
   for (const char* p = word; *p; p++) {
-    int c = getLetterIndex(*p);
-    node* next = node_getLetter(cur, c);
+    int c = get_letter_index(*p);
+    node* next = node_get_letter(cur, c);
 
     if (next == NULL) {
       next = node_new();
-      node_addLetter(cur, c, next);
+      node_add_letter(cur, c, next);
     }
 
     cur = next;
-    node_addPrefixNum(cur);
+    node_add_prefix_num(cur);
   }
 
-  if (!node_getEnd(cur)) t->words++;
-  node_setEnd(cur);
+  if (!node_get_end(cur)) t->words++;
+  node_set_end(cur);
 }
 
 bool trie_remove(trie* t, const char* word) {
@@ -150,11 +150,11 @@ bool trie_remove(trie* t, const char* word) {
   if (!trie_check(t, word)) return false;
 
   for (const char* p = word; *p; p++) {
-    int c = getLetterIndex(*p);
-    node* next = node_getLetter(cur, c);
+    int c = get_letter_index(*p);
+    node* next = node_get_letter(cur, c);
 
-    node_subPrefixNum(next);
-    if (nodeToRemove == NULL && node_getPrefixNum(next) == 0) {
+    node_sub_prefix_num(next);
+    if (nodeToRemove == NULL && node_get_prefix_num(next) == 0) {
       nodeToRemove = cur;
       idToRemove = c;
     }
@@ -162,8 +162,8 @@ bool trie_remove(trie* t, const char* word) {
   }
 
   t->words--;
-  node_eraseEnd(cur);
-  if (nodeToRemove != NULL) node_removeLetterSubTree(nodeToRemove, idToRemove);
+  node_erase_end(cur);
+  if (nodeToRemove != NULL) node_remove_letter_sub_tree(nodeToRemove, idToRemove);
 
   return true;
 };
@@ -171,15 +171,15 @@ bool trie_remove(trie* t, const char* word) {
 int trie_cnt(const trie* t, const char* word) {
   node* cur = t->root;
   for (const char* p = word; *p; p++) {
-    int c = getLetterIndex(*p);
-    node* next = node_getLetter(cur, c);
+    int c = get_letter_index(*p);
+    node* next = node_get_letter(cur, c);
     if (next == NULL) return 0;
     cur = next;
   }
-  return node_getPrefixNum(cur);
+  return node_get_prefix_num(cur);
 }
 
-int trie_getWords(const trie* t) { return t->words; }
+int trie_get_words(const trie* t) { return t->words; }
 
 void trie_free(trie* t) {
   if (t == NULL) return;
