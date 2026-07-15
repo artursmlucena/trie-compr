@@ -142,30 +142,34 @@ static void recursive_add(node* cur, const char* word) {
 
 void trie_add(trie* t, const char* word) { recursive_add(t->root, word); }
 
-bool trie_remove(trie* t, const char* word) {
-  node* cur = t->root;
-  node* nodeToRemove = NULL;
-  int idToRemove = -1;
+bool recursive_remove(node* cur, const char* word) {
+  if (!*(word)) {
+    if (!node_get_end(cur)) return false;
 
-  if (!trie_check(t, word)) return false;
+    node_sub_end(cur);
+    node_sub_prefix_num(cur);
+    return true;
+  }
+  int c = get_letter_index(*word);
+  node* next = node_get_letter(cur, c);
 
-  for (const char* p = word; *p; p++) {
-    int c = get_letter_index(*p);
-    node* next = node_get_letter(cur, c);
+  if (next == NULL) return false;
 
-    node_sub_prefix_num(next);
-    if (nodeToRemove == NULL && node_get_prefix_num(next) == 0) {
-      nodeToRemove = cur;
-      idToRemove = c;
+  bool removed = recursive_remove(next, word + 1);
+
+  if (removed) {
+    node_sub_prefix_num(cur);
+    if (node_get_prefix_num(next) == 0) {
+      free(next);
+      cur->letters[c] = NULL;
     }
-    cur = next;
   }
 
-  node_sub_end(cur);
-  if (nodeToRemove != NULL)
-    node_remove_letter_sub_tree(nodeToRemove, idToRemove);
+  return removed;
+}
 
-  return true;
+bool trie_remove(trie* t, const char* word) {
+  return recursive_remove(t->root, word);
 };
 
 int trie_cnt(const trie* t, const char* word) {
