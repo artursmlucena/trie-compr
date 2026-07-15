@@ -109,16 +109,18 @@ trie* trie_new() {
   return t;
 }
 
-bool trie_check(const trie* t, const char* word) {
-  node* cur = t->root;
+static bool recursive_check(const node* cur, const char* word) {
+  if (!*(word)) return node_get_end(cur);
 
-  for (const char* p = word; *p; p++) {
-    int c = get_letter_index(*p);
-    node* next = node_get_letter(cur, c);
-    if (next == NULL) return false;
-    cur = next;
-  }
-  return node_get_end(cur);
+  int c = get_letter_index(*word);
+  const node* next = node_get_letter(cur, c);
+  if (next == NULL) return false;
+
+  return recursive_check(next, word + 1);
+}
+
+bool trie_check(const trie* t, const char* word) {
+  return recursive_check(t->root, word);
 }
 
 void trie_add(trie* t, const char* word) {
@@ -164,7 +166,8 @@ bool trie_remove(trie* t, const char* word) {
 
   t->words--;
   node_erase_end(cur);
-  if (nodeToRemove != NULL) node_remove_letter_sub_tree(nodeToRemove, idToRemove);
+  if (nodeToRemove != NULL)
+    node_remove_letter_sub_tree(nodeToRemove, idToRemove);
 
   return true;
 };
