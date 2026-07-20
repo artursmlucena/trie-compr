@@ -13,7 +13,7 @@ class Trie :
             current = current.children[c]
             current.occurrence += 1
 
-        current.isEnd = True
+        current.isEnd += 1
 
     def countPrefix(self,word):
         current = self.root
@@ -35,7 +35,7 @@ class Trie :
 
             current = current.children[c]
 
-        return current.isEnd
+        return current.isEnd > 0
 
     def remove(self,word):
         if not self.checkWord(word):
@@ -53,11 +53,11 @@ class Trie :
 
             current = next
         
-        current.isEnd = False
+        current.isEnd -= 1
 
 
 class Node :
     def __init__(self):
         self.children = {}
         self.occurrence = 0
-        self.isEnd = False
+        self.isEnd = 0
