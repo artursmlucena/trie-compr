@@ -1,0 +1,69 @@
+estrutura *Trie*:
+    raiz = novo Nó()
+
+    func *Adição*(palavra : Texto)
+        atual = raiz
+        atual.ocorrencia = atual.ocorrencia + 1 
+
+        para cada caractece c em palavra:
+            se c NÃO existe em atual.filhos:
+                //cria o atual.filhos[c]
+                atual.filhos[c] = novo Nó()
+
+            //move para filho
+            atual = atual.filhos[c]
+            atual.ocorrencia = atual.ocorrencia + 1
+
+        atual.fimDePalavra = atual.fimDePalavra + 1
+
+    func *ContarPrefixo*(palavra : Texto) -> Inteiro
+        atual = raiz
+
+        para cada caractere c em palavra:
+            se c NÃO existe em atual.filhos:
+                Retorna 0
+
+            atual = atual.filhos[c]
+
+        Retorna atual.ocorrencia
+
+    func *ExistePalavra*(palavra : Texto) -> Booleano
+        atual = raiz
+
+        para cada caractere c em palavra:
+            se c NÃO existe em atual.filhos:
+                Retorna Falso
+
+        atual = atual.filhos[c]
+
+        Retorn (atual.fimDePalavra > 0)
+
+    
+
+    func *Remove*(palavra : Texto)
+        se NÃO ExistePalavra(palavra):
+            Retorna
+
+        atual = raiz
+        atual.ocorrencia = atual.ocorrencia - 1
+
+        para cada caractere c em palavra:
+            proximo = atual.filhos[c]
+            proximo.ocorrencia = proximo.ocorrencia - 1
+
+            se proximo.ocorrencia == 0:
+                Remover c de atual.filhos
+                Retorna
+
+            atual = proximo
+
+        atual.fimDePalavra = atual.fimDePalavra - 1
+
+Estrutura Nó:
+    filhos = Dicinário / Array (caractere -> Nó)
+    ocorrencia = Interio (inicia 0)
+    fimDePalavra = Interio (inicia 0)
+
+            
+
+                
