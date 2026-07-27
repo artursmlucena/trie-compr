@@ -38,18 +38,20 @@ trie* trie_new() {
   return t;
 }
 
-static bool recursive_check_word(const node* cur, const char* word) {
-  if (*word == '\0') return cur->end;
-
-  int c = *word - 'a';
-  const node* next = cur->letters[c];
-  if (next == NULL) return false;
-
-  return recursive_check_word(next, word + 1);
-}
-
 bool trie_check_word(const trie* t, const char* word) {
-  return recursive_check_word(t->root, word);
+  node* cur = t->root;
+
+  while (*word != '\0') {
+    int c = *word - 'a';
+    node* next = cur->letters[c];
+    if (next == NULL) {
+      return false;
+    }
+    cur = next;
+    word = word + 1;
+  }
+
+  return cur->end;
 }
 
 void trie_add(trie* t, const char* word) {
