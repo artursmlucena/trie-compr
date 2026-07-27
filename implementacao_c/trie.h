@@ -7,7 +7,7 @@ trie* trie_new();
 
 void trie_add(trie* t, const char* word);
 bool trie_check_word(const trie* t, const char* word);
-bool trie_remove(trie* t, const char* word);
+void trie_remove(trie* t, const char* word);
 
 void trie_free(trie* t);
 

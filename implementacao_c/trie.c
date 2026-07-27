@@ -43,12 +43,9 @@ bool trie_check_word(const trie* t, const char* word) {
 
   while (*word != '\0') {
     int c = *word - 'a';
-    node* next = cur->letters[c];
-    if (next == NULL) {
-      return false;
-    }
-    cur = next;
-    word = word + 1;
+    if (cur->letters[c] == NULL) return false;
+    cur = cur->letters[c];
+    word++;
   }
 
   return cur->end;
@@ -56,50 +53,37 @@ bool trie_check_word(const trie* t, const char* word) {
 
 void trie_add(trie* t, const char* word) {
   node* cur = t->root;
+  cur->occurrence++;
 
   while (*word != '\0') {
     int c = *word - 'a';
-    node* next = cur->letters[c];
-    if (next == NULL) {
-      cur->letters[c] = node_new();
-      next = cur->letters[c];
-    }
+    if (cur->letters[c] == NULL) cur->letters[c] = node_new();
+
+    cur = cur->letters[c];
     cur->occurrence++;
-    cur = next;
-    word = word + 1;
+    word++;
   }
-  cur->occurrence++;
   cur->end++;
 }
 
-static bool recursive_remove(node* cur, const char* word) {
-  if (*word == '\0') {
-    if (!cur->end) return false;
+void trie_remove(trie* t, const char* word) {
+  if (!trie_check_word(t, word)) return;
 
-    cur->end--;
-    cur->occurrence--;
-    return true;
-  }
-  int c = *word - 'a';
-  node* next = cur->letters[c];
-
-  if (next == NULL) return false;
-
-  bool removed = recursive_remove(next, word + 1);
-
-  if (removed) {
-    cur->occurrence--;
+  node* cur = t->root;
+  cur->occurrence--;
+  while (*word != '\0') {
+    int c = *word - 'a';
+    node* next = cur->letters[c];
+    next->occurrence--;
     if (next->occurrence == 0) {
-      node_free(next);
+      node_free(cur->letters[c]);
       cur->letters[c] = NULL;
+      return;
     }
+    cur = next;
+    word++;
   }
-
-  return removed;
-}
-
-bool trie_remove(trie* t, const char* word) {
-  return recursive_remove(t->root, word);
+  cur->end--;
 };
 
 static int recursive_count_prefix(const node* cur, const char* word) {
