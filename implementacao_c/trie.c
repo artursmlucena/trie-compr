@@ -52,26 +52,23 @@ bool trie_check_word(const trie* t, const char* word) {
   return recursive_check_word(t->root, word);
 }
 
-static void recursive_add(node* cur, const char* word) {
-  if (*word == '\0') {
-    cur->end++;
+void trie_add(trie* t, const char* word) {
+  node* cur = t->root;
+
+  while (*word != '\0') {
+    int c = *word - 'a';
+    node* next = cur->letters[c];
+    if (next == NULL) {
+      cur->letters[c] = node_new();
+      next = cur->letters[c];
+    }
     cur->occurrence++;
-    return;
+    cur = next;
+    word = word + 1;
   }
-  int c = *word - 'a';
-  node* next = cur->letters[c];
-
-  if (next == NULL) {
-    next = node_new();
-    cur->letters[c] = next;
-  }
-
-  recursive_add(next, word + 1);
-
   cur->occurrence++;
+  cur->end++;
 }
-
-void trie_add(trie* t, const char* word) { recursive_add(t->root, word); }
 
 static bool recursive_remove(node* cur, const char* word) {
   if (*word == '\0') {
