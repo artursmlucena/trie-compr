@@ -39,7 +39,7 @@ trie* trie_new() {
 }
 
 bool trie_check_word(const trie* t, const char* word) {
-  node* cur = t->root;
+  const node* cur = t->root;
 
   while (*word != '\0') {
     int c = *word - 'a';
@@ -84,19 +84,18 @@ void trie_remove(trie* t, const char* word) {
     word++;
   }
   cur->end--;
-};
-
-static int recursive_count_prefix(const node* cur, const char* word) {
-  if (*word == '\0') return cur->occurrence;
-  int c = *word - 'a';
-  const node* next = cur->letters[c];
-
-  if (next == NULL) return 0;
-  return recursive_count_prefix(next, word + 1);
 }
 
 int trie_count_prefix(const trie* t, const char* word) {
-  return recursive_count_prefix(t->root, word);
+  const node* cur = t->root;
+  while (*word != '\0') {
+    int c = *word - 'a';
+    if (cur->letters[c] == NULL) return 0;
+    cur = cur->letters[c];
+    word++;
+  }
+
+  return cur->occurrence;
 }
 
 void trie_free(trie* t) {
