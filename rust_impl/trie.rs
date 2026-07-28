@@ -1,19 +1,16 @@
-/*
- * Código inicial implementado para AC no problema
- * [Implement Trie (Prefix Tree)](https://leetcode.com/problems/implement-trie-prefix-tree)
- * do LeetCode
- */
 #[derive(Debug)]
 struct Node {
     pointers: [Option<Box<Node>>; 26],
-    is_leaf: bool,
+    pass_count: usize,
+    is_end: usize,
 }
 
 impl Node {
     fn new() -> Self {
         Self {
             pointers: std::array::from_fn(|_| None),
-            is_leaf: false,
+            pass_count: 0,
+            is_end: 0,
         }
     }
 }
@@ -25,40 +22,29 @@ struct Trie {
 impl Trie {
     fn new() -> Self {
         let mut root = Node::new();
-        root.is_leaf = true;
+        root.pass_count = 0;
+        root.is_end = 0;
 
         Self { root }
     }
 
-    fn insert(&mut self, word: &str) {
+    fn add(&mut self, word: &str) {
         let mut current = &mut self.root;
+        current.pass_count += 1;
 
         for b in word.bytes() {
             let index = (b - b'a') as usize;
             current = current.pointers[index]
                 .get_or_insert_with(|| Box::new(Node::new()))
                 .as_mut();
+
+            current.pass_count += 1;
         }
 
-        current.is_leaf = true;
+        current.is_end += 1;
     }
 
-    fn search(&self, word: &str) -> bool {
-        let mut current = &self.root;
-
-        for b in word.bytes() {
-            let index = (b - b'a') as usize;
-
-            match current.pointers[index].as_ref() {
-                Some(node) => current = node,
-                None => return false,
-            }
-        }
-
-        current.is_leaf
-    }
-
-    fn starts_with(&self, prefix: &str) -> bool {
+    fn count_prefix(&self, prefix: &str) -> usize {
         let mut current = &self.root;
 
         for b in prefix.bytes() {
@@ -66,10 +52,25 @@ impl Trie {
 
             match current.pointers[index].as_ref() {
                 Some(node) => current = node,
+                None => return 0,
+            }
+        }
+
+        return current.pass_count
+    }
+
+    fn contains(&self, word: &str) -> bool {
+        let mut current = &self.root;
+
+        for b in word.bytes() {
+            let index = (b - b'a') as usize;
+
+            match current.pointers[index].as_ref() {
+                Some(node) => current = node,
                 None => return false,
             }
         }
 
-        true
+        return current.is_end > 0
     }
 }
