@@ -22,6 +22,7 @@ struct Trie {
 impl Trie {
     fn new() -> Self {
         let mut root = Node::new();
+
         root.pass_count = 0;
         root.is_end = 0;
 
@@ -56,7 +57,7 @@ impl Trie {
             }
         }
 
-        return current.pass_count
+        return current.pass_count;
     }
 
     fn contains(&self, word: &str) -> bool {
@@ -71,6 +72,40 @@ impl Trie {
             }
         }
 
-        return current.is_end > 0
+        return current.is_end > 0;
+    }
+
+    fn remove(&mut self, word: &str) -> bool {
+        if !self.contains(word) {
+            return false;
+        }
+
+        let mut current = &mut self.root;
+        current.pass_count -= 1;
+
+        for b in word.bytes() {
+            let index = (b - b'a') as usize;
+
+            let should_remove = {
+                let child = current.pointers[index]
+                        .as_mut()
+                        .unwrap();
+
+                child.pass_count -= 1;
+                child.pass_count == 0
+            };
+
+            if should_remove {
+                current.pointers[index] = None;
+                return true;
+            }
+
+            current = current.pointers[index]
+                .as_mut()
+                .unwrap();
+        }
+
+        current.is_end -= 1;
+        return true;
     }
 }
