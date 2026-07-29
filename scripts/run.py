@@ -22,7 +22,7 @@ def main():
 
     os.chdir("..")
     os.chdir("implementacao_c")
-    os.system("gcc main.c -o main")
+    os.system("make -s Makefile")
     time_c = run_command("./main < ~/trie-compr/scripts/test.txt")
     os.chdir("..")
     os.chdir("scripts")
