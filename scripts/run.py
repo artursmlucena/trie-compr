@@ -22,7 +22,7 @@ def main():
 
     os.chdir("..")
     os.chdir("implementacao_c")
-    os.system("make -s")
+    os.system("make -s clean")
     time_c = run_command("./main < ~/trie-compr/scripts/test.txt")
     os.chdir("..")
     os.chdir("scripts")
