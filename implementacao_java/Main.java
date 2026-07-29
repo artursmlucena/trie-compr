@@ -9,7 +9,5 @@ class Main {
     for(int i = 0; i < n; i++) {
      trie.add(br.readLine()); 
     }
-    
   }
-
 }
