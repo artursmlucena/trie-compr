@@ -31,10 +31,10 @@ def main():
     ENTRADA = (
         "Digite um número entre 1 e 5 para indicar o tipo:\n"
         "1- Caso MUITO PEQUENO\n"
-        "2- Caso Pequeno\n"
-        "3- Caso Médio\n"
-        "4- Caso Grande\n"
-        "5- Caso Muito Grande\n> "
+        "2- Caso PEQUENO\n"
+        "3- Caso MÉDIO\n"
+        "4- Caso GRANDE\n"
+        "5- Caso MUITO GRANDE\n> "
     )
     test = None
 
