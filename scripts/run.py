@@ -46,7 +46,7 @@ def main():
 
     os.chdir("..")
     os.chdir("python_impl")
-    time_py = run_command("python3 main.py < ~trie-compr/scripts/test.txt")
+    time_py = run_command("python3 main.py < ~/trie-compr/scripts/test.txt")
     os.chdir("..")
     os.chdir("scripts")
     save_time("time_py.txt", time_py)
