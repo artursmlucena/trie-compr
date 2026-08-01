@@ -18,7 +18,7 @@ def save_time(name: str, time: float):
 
 
 def main():
-    os.system("python3 generator.py")
+    os.system("python3 operation_generator.py")
 
     os.chdir("..")
     os.chdir("implementacao_c")
@@ -36,20 +36,20 @@ def main():
     os.chdir("scripts")
     save_time("time_java.txt", time_java)
 
-    os.chdir("..")
-    os.chdir("rust_impl")
-    os.system("rustc main.rs")
-    time_rust = run_command("./main < ~/trie-compr/scripts/cases.txt")
-    os.chdir("..")
-    os.chdir("scripts")
-    save_time("time_rust.txt", time_rust)
+    # os.chdir("..")
+    # os.chdir("rust_impl")
+    # os.system("rustc main.rs")
+    # time_rust = run_command("./main < ~/trie-compr/scripts/cases.txt")
+    # os.chdir("..")
+    # os.chdir("scripts")
+    # save_time("time_rust.txt", time_rust)
 
-    os.chdir("..")
-    os.chdir("python_impl")
-    time_py = run_command("python3 main.py < ~/trie-compr/scripts/cases.txt")
-    os.chdir("..")
-    os.chdir("scripts")
-    save_time("time_py.txt", time_py)
+    # os.chdir("..")
+    # os.chdir("python_impl")
+    # time_py = run_command("python3 main.py < ~/trie-compr/scripts/cases.txt")
+    # os.chdir("..")
+    # os.chdir("scripts")
+    # save_time("time_py.txt", time_py)
 
 
 if __name__ == "__main__":
