@@ -2,8 +2,8 @@ import random
 
 ALPHABET: str = "abcdefghijklmnopqrstuvwxyz"
 DEFAULT_MAXIMUM_WORD_LENGTH: int = 10
-NUMBER_OF_TEST_CASES: int = 1
-MAXIMUM_TOTAL_OPERATIONS: int = 7
+NUMBER_OF_TEST_CASES: int = 10
+MAXIMUM_TOTAL_OPERATIONS: int = 100_000
 
 SEED: int = random.randint(0, 2 ** 32 - 1)
 random.seed(SEED)
@@ -83,20 +83,19 @@ def generate_test_case(number_of_operations: int):
         # Test case: remove(word) [no output]
         else:
             if stored_words and random.randint(0, 1) == 0:
-                i: int = rnd_int_from_len(stored_words)
-                string: str = stored_words[i]
-
-                temp: str = stored_words[i]
-                stored_words[i] = stored_words[len(stored_words) - 1]
-                stored_words[len(stored_words) - 1] = temp
-
-                stored_words.pop()
-                if string not in stored_words:
-                    pseudo_trie.remove(string)
+                string: str = stored_words[rnd_int_from_len(stored_words)]
             else:
                 string: str = get_random_word()
 
             cases.append(f"4 {string}\n")
+
+            if string in pseudo_trie:
+                i: int = stored_words.index(string)
+                stored_words[i] = stored_words[len(stored_words) - 1]
+                stored_words.pop()
+
+                if string not in stored_words:
+                    pseudo_trie.remove(string)
 
     return "".join(cases), "".join(correct_outputs)
 
