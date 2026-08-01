@@ -51,7 +51,7 @@ bool trie_check_word(const trie* t, const char* word) {
   return cur->end;
 }
 
-void trie_add(trie* t, const char* word) {
+void trie_add(const trie* t, const char* word) {
   node* cur = t->root;
   cur->occurrence++;
 
@@ -66,7 +66,7 @@ void trie_add(trie* t, const char* word) {
   cur->end++;
 }
 
-void trie_remove(trie* t, const char* word) {
+void trie_remove(const trie* t, const char* word) {
   if (!trie_check_word(t, word)) return;
 
   node* cur = t->root;
