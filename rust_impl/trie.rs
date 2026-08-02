@@ -15,12 +15,12 @@ impl Node {
     }
 }
 
-struct Trie {
+pub struct Trie {
     root: Node,
 }
 
 impl Trie {
-    fn new() -> Self {
+    pub fn new() -> Self {
         let mut root = Node::new();
 
         root.pass_count = 0;
@@ -29,7 +29,7 @@ impl Trie {
         Self { root }
     }
 
-    fn add(&mut self, word: &str) {
+    pub fn add(&mut self, word: &str) {
         let mut current = &mut self.root;
         current.pass_count += 1;
 
@@ -45,7 +45,7 @@ impl Trie {
         current.is_end += 1;
     }
 
-    fn count_prefix(&self, prefix: &str) -> usize {
+    pub fn count_prefix(&self, prefix: &str) -> usize {
         let mut current = &self.root;
 
         for b in prefix.bytes() {
@@ -60,7 +60,7 @@ impl Trie {
         return current.pass_count;
     }
 
-    fn contains(&self, word: &str) -> bool {
+    pub fn contains(&self, word: &str) -> bool {
         let mut current = &self.root;
 
         for b in word.bytes() {
@@ -75,7 +75,7 @@ impl Trie {
         return current.is_end > 0;
     }
 
-    fn remove(&mut self, word: &str) -> bool {
+    pub fn remove(&mut self, word: &str) -> bool {
         if !self.contains(word) {
             return false;
         }
