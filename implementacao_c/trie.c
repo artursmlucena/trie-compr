@@ -1,9 +1,11 @@
 #include <stdbool.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "ptr.h"
 
 #define ALPHABET_SIZE 26
+#define POOL_SIZE 1000001
 
 typedef struct node {
   struct node* letters[ALPHABET_SIZE];
@@ -12,29 +14,31 @@ typedef struct node {
 
 } node;
 
-void node_free(node* n) {
-  if (n == NULL) return;
-  for (int i = 0; i < ALPHABET_SIZE; i++) node_free(n->letters[i]);
-  free(n);
-}
+typedef struct node_pool {
+  node* nodes;
+  int used;
+} node_pool;
 
-node* node_new() {
-  node* newNode = malloc(sizeof(node));
-  check_null(newNode);
-  for (int i = 0; i < ALPHABET_SIZE; i++) newNode->letters[i] = NULL;
-  newNode->end = 0;
-  newNode->occurrence = 0;
-  return newNode;
+node* node_new(node_pool* pool) {
+  node* n = &pool->nodes[pool->used++];
+  memset(n, 0, sizeof *n);
+  return n;
 }
 
 typedef struct trie {
   node* root;
+  node_pool pool;
 } trie;
 
 trie* trie_new() {
   trie* t = malloc(sizeof(trie));
   check_null(t);
-  t->root = node_new();
+
+  t->pool.nodes = calloc(POOL_SIZE, sizeof(node));
+  check_null(t->pool.nodes);
+  t->pool.used = 0;
+
+  t->root = node_new(&t->pool);
   return t;
 }
 
@@ -51,13 +55,13 @@ bool trie_check_word(const trie* t, const char* word) {
   return cur->end;
 }
 
-void trie_add(const trie* t, const char* word) {
+void trie_add(trie* t, const char* word) {
   node* cur = t->root;
   cur->occurrence++;
 
   while (*word != '\0') {
     int c = *word - 'a';
-    if (cur->letters[c] == NULL) cur->letters[c] = node_new();
+    if (cur->letters[c] == NULL) cur->letters[c] = node_new(&t->pool);
 
     cur = cur->letters[c];
     cur->occurrence++;
@@ -76,7 +80,6 @@ void trie_remove(const trie* t, const char* word) {
     node* next = cur->letters[c];
     next->occurrence--;
     if (next->occurrence == 0) {
-      node_free(cur->letters[c]);
       cur->letters[c] = NULL;
       return;
     }
@@ -100,6 +103,6 @@ int trie_count_prefix(const trie* t, const char* word) {
 
 void trie_free(trie* t) {
   if (t == NULL) return;
-  node_free(t->root);
+  free(t->pool.nodes);
   free(t);
 }
