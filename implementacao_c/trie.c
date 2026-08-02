@@ -5,100 +5,113 @@
 #include "ptr.h"
 
 #define ALPHABET_SIZE 26
-#define POOL_SIZE 1000001
 
 typedef struct node {
-  struct node* letters[ALPHABET_SIZE];
   int end;
   int occurrence;
-
+  int letters[ALPHABET_SIZE];
 } node;
 
 typedef struct node_pool {
   node* nodes;
-  int used;
+  size_t used;
+  size_t size;
 } node_pool;
 
-node* node_new(node_pool* pool) {
-  node* n = &pool->nodes[pool->used++];
-  memset(n, 0, sizeof *n);
-  return n;
-}
-
 typedef struct trie {
-  node* root;
+  int root;
   node_pool pool;
 } trie;
+
+static void node_pool_resize(node_pool* pool) {
+  size_t new_size = 2 * pool->size;
+  node* tmp = realloc(pool->nodes, new_size * sizeof(node));
+  check_null(tmp);
+
+  pool->nodes = tmp;
+  memset(&pool->nodes[pool->size], 0, (new_size - pool->size) * sizeof(node));
+  pool->size = new_size;
+}
+
+static int node_new(node_pool* pool) {
+  if (pool->used == pool->size) node_pool_resize(pool);
+  return pool->used++;
+}
 
 trie* trie_new() {
   trie* t = malloc(sizeof(trie));
   check_null(t);
 
-  t->pool.nodes = calloc(POOL_SIZE, sizeof(node));
+  t->pool.size = 20;
+  t->pool.nodes = calloc(t->pool.size, sizeof(node));
   check_null(t->pool.nodes);
-  t->pool.used = 0;
 
-  t->root = node_new(&t->pool);
+  t->root = 0;
+  t->pool.used = 1;
   return t;
 }
 
 bool trie_check_word(const trie* t, const char* word) {
-  const node* cur = t->root;
+  int cur = t->root;
 
   while (*word != '\0') {
     int c = *word - 'a';
-    if (cur->letters[c] == NULL) return false;
-    cur = cur->letters[c];
+    if (t->pool.nodes[cur].letters[c] == 0) return false;
+    cur = t->pool.nodes[cur].letters[c];
     word++;
   }
 
-  return cur->end;
+  return t->pool.nodes[cur].end;
 }
 
 void trie_add(trie* t, const char* word) {
-  node* cur = t->root;
-  cur->occurrence++;
+  int cur = t->root;
+  t->pool.nodes[cur].occurrence++;
 
   while (*word != '\0') {
     int c = *word - 'a';
-    if (cur->letters[c] == NULL) cur->letters[c] = node_new(&t->pool);
+    if (t->pool.nodes[cur].letters[c] == 0) {
+      int new_idx = node_new(&t->pool);
+      t->pool.nodes[cur].letters[c] = new_idx;
+    }
 
-    cur = cur->letters[c];
-    cur->occurrence++;
+    cur = t->pool.nodes[cur].letters[c];
+    t->pool.nodes[cur].occurrence++;
     word++;
   }
-  cur->end++;
+  t->pool.nodes[cur].end++;
 }
 
-void trie_remove(const trie* t, const char* word) {
+void trie_remove(trie* t, const char* word) {
   if (!trie_check_word(t, word)) return;
 
-  node* cur = t->root;
-  cur->occurrence--;
+  int cur = t->root;
+  t->pool.nodes[cur].occurrence--;
+
   while (*word != '\0') {
     int c = *word - 'a';
-    node* next = cur->letters[c];
-    next->occurrence--;
-    if (next->occurrence == 0) {
-      cur->letters[c] = NULL;
+    int next = t->pool.nodes[cur].letters[c];
+    t->pool.nodes[next].occurrence--;
+    if (t->pool.nodes[next].occurrence == 0) {
+      t->pool.nodes[cur].letters[c] = 0;
       return;
     }
     cur = next;
     word++;
   }
-  cur->end--;
+  t->pool.nodes[cur].end--;
 }
 
 int trie_count_prefix(const trie* t, const char* word) {
-  const node* cur = t->root;
+  int cur = t->root;
   while (*word != '\0') {
     int c = *word - 'a';
-    if (cur->letters[c] == NULL) return 0;
-    cur = cur->letters[c];
+    if (t->pool.nodes[cur].letters[c] == 0) return 0;
+    cur = t->pool.nodes[cur].letters[c];
     word++;
   }
 
-  return cur->occurrence;
+  return t->pool.nodes[cur].occurrence;
 }
 
 void trie_free(trie* t) {
