@@ -1,5 +1,5 @@
 1
-1882741
+1882738
 1 aaaa
 1 aaab
 1 aaac
@@ -456976,7 +456976,6 @@
 1 zzzx
 1 zzzy
 1 zzzz
-3 
 3 a
 3 aa
 3 aaa
@@ -932231,7 +932230,6 @@
 3 zzzx
 3 zzzy
 3 zzzz
-4 
 4 a
 4 aa
 4 aaa
@@ -1407486,7 +1407484,6 @@
 4 zzzx
 4 zzzy
 4 zzzz
-2 
 2 a
 2 aa
 2 aaa
