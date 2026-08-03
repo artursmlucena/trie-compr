@@ -77,7 +77,7 @@ impl Trie {
 
     pub fn remove(&mut self, word: &str) {
         if !self.contains(word) {
-            return false;
+            return;
         }
 
         let mut current = &mut self.root;
@@ -97,7 +97,7 @@ impl Trie {
 
             if should_remove {
                 current.pointers[index] = None;
-                return true;
+                return;
             }
 
             current = current.pointers[index]
@@ -106,6 +106,5 @@ impl Trie {
         }
 
         current.is_end -= 1;
-        return true;
     }
 }
