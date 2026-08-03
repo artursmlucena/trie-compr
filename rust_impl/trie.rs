@@ -75,7 +75,7 @@ impl Trie {
         return current.is_end > 0;
     }
 
-    pub fn remove(&mut self, word: &str) -> bool {
+    pub fn remove(&mut self, word: &str) {
         if !self.contains(word) {
             return false;
         }
