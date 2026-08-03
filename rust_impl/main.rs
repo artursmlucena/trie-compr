@@ -1,7 +1,7 @@
 mod trie;
 
+use std::io::{self, BufRead, BufWriter, Write};
 use trie::Trie;
-use std::io::{ self, BufRead, BufWriter, Write };
 
 fn main() -> io::Result<()> {
     let mut input = io::stdin().lock();
@@ -28,7 +28,11 @@ fn main() -> io::Result<()> {
                 "1" => trie_instance.add(word),
 
                 "2" => {
-                    let out = if trie_instance.contains(word) { "YES" } else { "NO" };
+                    let out = if trie_instance.contains(word) {
+                        "YES"
+                    } else {
+                        "NO"
+                    };
                     writeln!(output, "{}", out)?;
                 }
 
@@ -37,9 +41,8 @@ fn main() -> io::Result<()> {
                 _ => unreachable!(),
             }
         }
-
-        output.flush()?;
     }
+    output.flush()?;
 
     Ok(())
 }
