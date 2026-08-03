@@ -35,14 +35,14 @@ def main():
     os.chdir("..")
     os.chdir("scripts")
     save_time("time_java.txt", time_java)
-    #
-    # os.chdir("..")
-    # os.chdir("rust_impl")
-    # os.system("rustc main.rs")
-    # time_rust = run_command("./main < ~/trie-compr/scripts/cases.txt")
-    # os.chdir("..")
-    # os.chdir("scripts")
-    # save_time("time_rust.txt", time_rust)
+
+    os.chdir("..")
+    os.chdir("rust_impl")
+    os.system("rustc main.rs")
+    time_rust = run_command("./main < ~/trie-compr/scripts/cases.txt")
+    os.chdir("..")
+    os.chdir("scripts")
+    save_time("time_rust.txt", time_rust)
 
     os.chdir("..")
     os.chdir("python_impl")
