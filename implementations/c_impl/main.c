@@ -28,6 +28,7 @@ int main() {
           break;
         case 3:
           p += sprintf(p, "%d\n", trie_count_prefix(Trie, buffer));
+          break;
         case 4:
           trie_remove(Trie, buffer);
           break;
