@@ -2,6 +2,8 @@
 
 #include "trie.h"
 char buffer[2000007];
+char out[1 << 30];
+char* p = out;
 
 int main() {
   int t;
@@ -19,14 +21,14 @@ int main() {
       if (operation == 2) {
         bool k = trie_check_word(Trie, buffer);
         if (k)
-          printf("YES\n");
+          p += sprintf(p, "YES\n");
         else
-          printf("NO\n");
+          p += sprintf(p, "NO\n");
       }
 
       if (operation == 3) {
         int cnt = trie_count_prefix(Trie, buffer);
-        printf("%d\n", cnt);
+        p += sprintf(p, "%d\n", cnt);
       }
 
       if (operation == 4) trie_remove(Trie, buffer);
@@ -34,4 +36,6 @@ int main() {
 
     trie_free(Trie);
   }
+
+  fwrite(out, 1, p - out, stdout);
 }
