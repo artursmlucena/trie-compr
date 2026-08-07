@@ -5,7 +5,6 @@ import sys
 input = sys.stdin.readline
 
 def main():
-    start = time.perf_counter()
     t = int(input())
 
     while t != 0:
@@ -26,12 +25,6 @@ def main():
             if k == 4:
                 trie.remove(inp[1])
         t -= 1
-
-    end = time.perf_counter()
-    diff = end - start
-
-    with open("time_py.txt","a",encoding = "utf-8") as arq:
-        arq.write(f"{diff:.10}\n")
 
 
 main()
