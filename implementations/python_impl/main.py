@@ -10,7 +10,7 @@ def main():
         n = int(input())
         trie = Trie()
         for _ in range(n):
-            inp = input().split(" ")
+            inp = input().strip().split(" ")
             k = int(inp[0])
             if k == 1:
                 trie.add(inp[1])

@@ -7,10 +7,11 @@ class Trie:
         current.occurrence += 1
 
         for c in word:
-            if c not in current.children:
-                current.children[c] = Node()
+            pos = ord(c) - ord('a')
+            if current.children[pos] is None:
+                current.children[pos] = Node()
 
-            current = current.children[c]
+            current = current.children[pos]
             current.occurrence += 1
 
         current.isEnd += 1
@@ -19,10 +20,11 @@ class Trie:
         current = self.root
 
         for c in word:
-            if c not in current.children:
+            pos = ord(c) - ord('a')
+            if current.children[pos] is None:
                 return 0
 
-            current = current.children[c]
+            current = current.children[pos]
 
         return current.occurrence
 
@@ -30,10 +32,11 @@ class Trie:
         current = self.root
 
         for c in word:
-            if c not in current.children:
+            pos = ord(c) - ord('a')
+            if current.children[pos] is None:
                 return False
 
-            current = current.children[c]
+            current = current.children[pos]
 
         return current.isEnd > 0
 
@@ -44,11 +47,12 @@ class Trie:
         current = self.root
         current.occurrence -= 1
         for c in word:
-            next = current.children[c]
+            pos = ord(c) - ord('a')
+            next = current.children[pos]
             next.occurrence -= 1
 
             if next.occurrence == 0:
-                del current.children[c]
+                current.children[pos] = None
                 return
 
             current = next
@@ -58,6 +62,6 @@ class Trie:
 
 class Node:
     def __init__(self):
-        self.children = {}
+        self.children = [None] * 26
         self.occurrence = 0
         self.isEnd = 0
