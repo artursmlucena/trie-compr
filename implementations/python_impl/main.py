@@ -1,5 +1,7 @@
 from python_impl import Trie
+import sys
 
+input = sys.stdin.readline
 
 def main():
     t = int(input())
