@@ -1,6 +1,6 @@
 #[derive(Debug)]
 struct Node {
-    pointers: [Option<Box<Node>>; 26],
+    pointers: [usize; 26],
     pass_count: usize,
     is_end: usize,
 }
@@ -8,7 +8,7 @@ struct Node {
 impl Node {
     fn new() -> Self {
         Self {
-            pointers: std::array::from_fn(|_| None),
+            pointers: [0; 26],
             pass_count: 0,
             is_end: 0,
         }
@@ -16,95 +16,79 @@ impl Node {
 }
 
 pub struct Trie {
-    root: Node,
+    nodes: Vec<Node>,
 }
 
 impl Trie {
     pub fn new() -> Self {
-        let mut root = Node::new();
-
-        root.pass_count = 0;
-        root.is_end = 0;
-
-        Self { root }
+        Self { nodes: vec![Node::new()] }
     }
 
     pub fn add(&mut self, word: &str) {
-        let mut current = &mut self.root;
-        current.pass_count += 1;
+        let mut current = 0usize;
+        self.nodes[current].pass_count += 1;
 
         for b in word.bytes() {
             let index = (b - b'a') as usize;
-            current = current.pointers[index]
-                .get_or_insert_with(|| Box::new(Node::new()))
-                .as_mut();
 
-            current.pass_count += 1;
+            let next = self.nodes[current].pointers[index];
+            if next == 0 {
+                let new_node = self.nodes.len();
+                self.nodes.push(Node::new());
+                self.nodes[current].pointers[index] = new_node;
+            }
+
+            current = self.nodes[current].pointers[index];
+            self.nodes[current].pass_count += 1;
         }
 
-        current.is_end += 1;
+        self.nodes[current].is_end += 1;
     }
 
     pub fn count_prefix(&self, prefix: &str) -> usize {
-        let mut current = &self.root;
+        let mut current = 0usize;
 
         for b in prefix.bytes() {
             let index = (b - b'a') as usize;
 
-            match current.pointers[index].as_ref() {
-                Some(node) => current = node,
-                None => return 0,
-            }
+            let next = self.nodes[current].pointers[index];
+            if next == 0 { return 0; }
+
+            current = next;
         }
 
-        return current.pass_count;
+        return self.nodes[current].pass_count;
     }
 
     pub fn contains(&self, word: &str) -> bool {
-        let mut current = &self.root;
+        let mut current = 0usize;
 
         for b in word.bytes() {
             let index = (b - b'a') as usize;
 
-            match current.pointers[index].as_ref() {
-                Some(node) => current = node,
-                None => return false,
-            }
+            let next = self.nodes[current].pointers[index];
+            if next == 0 { return false; }
+
+            current = next;
         }
 
-        return current.is_end > 0;
+        return self.nodes[current].is_end > 0;
     }
 
     pub fn remove(&mut self, word: &str) {
-        if !self.contains(word) {
-            return;
-        }
+        if !self.contains(word) { return; }
 
-        let mut current = &mut self.root;
-        current.pass_count -= 1;
+        let mut current = 0usize;
+
+        self.nodes[current].pass_count -= 1;
 
         for b in word.bytes() {
             let index = (b - b'a') as usize;
 
-            let should_remove = {
-                let child = current.pointers[index]
-                        .as_mut()
-                        .unwrap();
-
-                child.pass_count -= 1;
-                child.pass_count == 0
-            };
-
-            if should_remove {
-                current.pointers[index] = None;
-                return;
-            }
-
-            current = current.pointers[index]
-                .as_mut()
-                .unwrap();
+            current = self.nodes[current].pointers[index];
+            self.nodes[current].pass_count -= 1;
         }
 
-        current.is_end -= 1;
+        self.nodes[current].is_end -= 1;
     }
 }
