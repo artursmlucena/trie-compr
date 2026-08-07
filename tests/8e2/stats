@@ -1,0 +1,9 @@
+:: Calculating statistics from 'benched_time'...
+  -> Data points: 100 numbers
+  -> Average: 0.03951
+  -> Minimum: 0.029
+  -> Median: 0.039
+  -> Variance: 3.2e-05
+  -> Standard deviation: 0.005675
+  -> Coefficient of variation: 0.143644
+| 100 | 0.03951 | 0.029 | 0.039 | 3.2e-05 | 0.005675 | 0.143644
