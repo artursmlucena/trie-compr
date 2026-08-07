@@ -1,4 +1,5 @@
 import java.io.*;
+import java.time.*;
 
 class Main {
 
@@ -6,11 +7,23 @@ class Main {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
 
-    int t = Integer.parseInt(br.readLine());
+    FileWriter write = new FileWriter("time_java.txt");
 
+    int t = Integer.parseInt(br.readLine());
+    
+    long start = System.nanoTime();
     while (t-- != 0)
       test(br, out);
+      
+    long end = System.nanoTime();
+    
+    double duracao = (end - start) / 1_000_000.0;
 
+    String output = String.format("%2f", duracao / 1000.0);
+    
+    write.write(output);
+    write.flush();
+    write.close();
     out.flush();
   }
 
