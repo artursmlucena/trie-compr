@@ -1,16 +1,13 @@
-import java.util.HashMap;
-import java.util.Map;
-
 class Node {
   Node[] children = new Node[26];
   int occurrence = 0;
   int isEnd = 0;
 }
 
-public class StandartTrie {
+public class StandardTrie {
   private Node root;
 
-  public StandartTrie() {
+  public StandardTrie() {
       root = new Node();
   }
 

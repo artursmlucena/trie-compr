@@ -17,7 +17,7 @@ class Main {
 
   public static void test(BufferedReader br, PrintWriter out) throws IOException {
     int n = Integer.parseInt(br.readLine());
-    StandartTrie trie = new StandartTrie();
+    StandardTrie trie = new StandardTrie();
 
     for (int i = 0; i < n; i++) {
       String[] in = br.readLine().split(" ");
