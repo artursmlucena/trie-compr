@@ -13,7 +13,7 @@ def fetch_numbers(filepath: str) -> list[float]:
 def main():
     print(":: Calculating statistics from 'benched_time'...")
 
-    data: list[float] = fetch_numbers("benched_time")
+    data: list[float] = fetch_numbers("benched-time-java")
     data_size: int = len(data)
     print(f"  -> Data points: {data_size} numbers")
 
@@ -39,6 +39,8 @@ def main():
 
     coefficient_variation = (standard_deviation / average)
     print(f"  -> Coefficient of variation: {truncate(coefficient_variation)}")
+
+    print(f"| {data_size} | {truncate(average)} | {minimum} | {truncate(median)} | {truncate(variance)} | {truncate(standard_deviation)} | {truncate(coefficient_variation)}")
 
 
 if __name__ == "__main__":

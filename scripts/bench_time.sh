@@ -1,7 +1,7 @@
 TIMEFORMAT="%U %S"
 
 input="./cases.txt"
-executable="./main"
+executable="../../implementations/python_impl/run_py.sh"
 
 unit_result=$( { time "${executable}" < "${input}" > /dev/null 2>/dev/null; } 2>&1 )
 
